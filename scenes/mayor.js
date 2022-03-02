@@ -61,7 +61,8 @@ class mayor extends Phaser.Scene {
   backgroundPolice.displayHeight = 100
   this.previewBox.add(backgroundPolice);
   var policeNeed = gameStats.lR * 1 + gameStats.mR * 2 + gameStats.dR * 3 + gameStats.lC * 1 + gameStats.mC * 2 + gameStats.dC * 3 + gameStats.lI * 1 + gameStats.hI * 2;
-  var policeCost = gameStats.policeCapacity * gameStats.policeMaintenance;
+  var policePercent = policeNeed / gameStats.policeCapacity
+  var policeCost = (gameStats.policeCapacity * gameStats.policeMaintenance) * policePercent;
   var policeText = this.add.bitmapText(100,775, 'topaz', 'P: ' + policeNeed + '/' + gameStats.policeCapacity + ' $' + policeCost, 40).setOrigin(0,.5).setTint(0xbf5846).setAlpha(1);
   
   

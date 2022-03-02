@@ -49,8 +49,9 @@ class mayor extends Phaser.Scene {
   backgroundPower.displayHeight = 100
   this.previewBox.add(backgroundPower);
   var powerDraw = gameStats.lR * 5 + gameStats.mR * 15 + gameStats.dR * 30 + gameStats.lC * 5 + gameStats.mC * 20 + gameStats.dC * 40 + gameStats.lI * 10 + gameStats.hI * 40;
-  var powerText = this.add.bitmapText(100,650, 'topaz', 'P: ' + powerDraw + '/' + gameStats.powerCapacity + ' $' + gameStats.powerCapacity * gameStats.powerMaintenance, 40).setOrigin(0,.5).setTint(0xbf5846).setAlpha(1);
-  
+  var powerPercent = powerDraw / gameStats.powerCapacity
+  var powerText = this.add.bitmapText(100,650, 'topaz', 'P: ' + powerDraw + '/' + gameStats.powerCapacity + ' $' + (gameStats.powerCapacity * gameStats.powerMaintenance) * powerPercent, 40).setOrigin(0,.5).setTint(0xbf5846).setAlpha(1);
+  //var waterCapcity = getWaterCapacity()
   var waterText = this.add.bitmapText(785,650, 'topaz', 'W: ' + gameStats.waterTowers + ' $' + gameStats.waterTowers * gameStats.waterMaintenance, 40).setOrigin(1,.5).setTint(0xbf5846).setAlpha(1);
   
   

@@ -1,11 +1,9 @@
 function calculateIncome(){
-  var workforceAvailable = Math.floor(censusHistory.resPopulation * .65)
- 
-  var income = Math.floor((workforceAvailable * gameStats.resEarning) * gameStats.resTax)
-  console.log('inc ' + income)
+  var income = Math.floor((censusHistory.workforce * gameStats.resEarning) * gameStats.resTax)
+  //console.log('inc ' + income)
   income += Math.floor((censusHistory.comPopulation * gameStats.comEarning) * gameStats.comTax)
   income += Math.floor((censusHistory.indPopulation * gameStats.indEarning) * gameStats.indTax)
-  console.log('wf ' + workforceAvailable)
+  //console.log('wf ' + workforceAvailable)
   return income
 }
 
@@ -23,7 +21,9 @@ var expenditures = gameStats.rT * gameStats.roadMaintenance
     //water maintenance
    expenditures += gameStats.waterTowers * gameStats.waterMaintenance
     //power maintenance
-    expenditures += gameStats.powerCapacity * gameStats.powerMaintenance
+    var powerDraw = gameStats.lR * 5 + gameStats.mR * 15 + gameStats.dR * 30 + gameStats.lC * 5 + gameStats.mC * 20 + gameStats.dC * 40 + gameStats.lI * 10 + gameStats.hI * 40;
+  var powerPercent = powerDraw / gameStats.powerCapacity
+    expenditures += (gameStats.powerCapacity * gameStats.powerMaintenance) * powerPercent
     //health Maintenance
    expenditures += gameStats.healthCapacity * gameStats.healthMaintenance
     //education maintenance
@@ -33,6 +33,9 @@ var expenditures = gameStats.rT * gameStats.roadMaintenance
     
     return expenditures
   // return 4328
+}
+function getWaterCapacity(){
+  return gameStats.waterTowers * (gameStats.waterRange *2 + 1)
 }
 function calculateDesirabilty(){
   

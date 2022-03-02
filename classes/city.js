@@ -12,20 +12,20 @@ class City {
   evaluateDay(){
     var employment
   var totalPop = Math.round(censusHistory.resPopulation + censusHistory.comPopulation + censusHistory.indPopulation);
-  if (gameStats.resPopulation > 0){
-    employment = (censusHistory.comPopulation + censusHistory.indPopulation) / censusHistory.resPopulation;
+  if (gameStats.resPopulation > 10){
+    employment = (censusHistory.comPopulation + censusHistory.indPopulation) / censusHistory.workforce;
    } else {
     employment = 1;
    }
    
-   var migration = censusHistory.resPopulation * (employment -1)
-   var births = censusHistory.resPopulation * gameStats.birthRate;
-   var projectedResPop = censusHistory.resPopulation + migration + births
+   var migration = censusHistory.workforce * (employment -1)
+   var births = censusHistory.workforce * gameStats.birthRate;
+   var projectedResPop = censusHistory.workforce + migration + births
    
    // Examine how many zones require workers
     var labourBase = censusHistory.comPopulation + censusHistory.indPopulation;
     if (labourBase > 0.0){
-      labourBase = censusHistory.resPopulation / labourBase;
+      labourBase = censusHistory.workforce / labourBase;
     } else {
       labourBase = 1;
     }
@@ -33,7 +33,7 @@ class City {
       // Project future industry and commercial needs, taking into account available labour, and competition from
     // other global cities
     var extMarketParamTable = [1.2, 1.1, 0.98];
-    var internalMarket = (censusHistory.resPopulation + censusHistory.comPopulation + censusHistory.indPopulation) / gameStats.internalMarketDenom;
+    var internalMarket = (censusHistory.workforce + censusHistory.comPopulation + censusHistory.indPopulation) / gameStats.internalMarketDenom;
     var projectedComPop = internalMarket * labourBase;
     var projectedIndPop = censusHistory.indPopulation * labourBase * extMarketParamTable[0];
     projectedIndPop = Math.max(projectedIndPop, gameStats.projectedIndPopMin);
@@ -41,8 +41,8 @@ class City {
     
     // Calculate the expected percentage changes in each population type
     var resRatio;
-    if (censusHistory.resPopulation > 0){
-      resRatio = projectedResPop / censusHistory.resPopulation;
+    if (censusHistory.workforce > 0){
+      resRatio = projectedResPop / censusHistory.workforce;
     } else {
       resRatio = gameStats.resRatioDefault;
     }

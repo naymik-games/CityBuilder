@@ -195,7 +195,7 @@ this.dayPartText = this.add.bitmapText(650, 225, 'topaz', 'morning', 40).setOrig
   updateDisplay() {
 
     this.fundsText.setText('$' + gameStats.funds)
-    this.popText.setText('P:' + censusHistory.resPopulation + ' (' + censusHistory.comPopulation + ',' + censusHistory.indPopulation + ')')
+    this.popText.setText('P:' + censusHistory.resPopulation + ' (' + censusHistory.workforce  + ',' + censusHistory.comPopulation + ',' + censusHistory.indPopulation + ')')
     this.avgText.setText('LV:' + censusHistory.landValueAvg + ' IQ:' + censusHistory.iqAvg);
     this.saveStats();
   }

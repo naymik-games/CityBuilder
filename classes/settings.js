@@ -43,7 +43,7 @@ let defaultStats = {
   depotRange: 8,
   waterRange: 9,
   waterTowers: 0,
-  waterMaintenance: 3,
+  waterMaintenance: 500,
   powerCapacity: 0,
   powerMaintenance: .5,
   policeCapacity: 0,

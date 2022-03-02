@@ -134,6 +134,10 @@ this.dayPartText = this.add.bitmapText(650, 225, 'topaz', 'morning', 40).setOrig
     this.eduIcon.on('pointerdown', function() {
       this.events.emit('view', 5);
     }, this)
+    this.clearIcon = this.add.image(825, 775, 'mayor_icons', 17).setOrigin(.5, 0).setScale(2).setInteractive();
+    this.clearIcon.on('pointerdown', function() {
+      this.events.emit('viewClear');
+    }, this)
     Main.events.on('score', function() {
 
       this.score += 1;

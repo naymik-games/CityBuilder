@@ -151,6 +151,14 @@ class playGame extends Phaser.Scene {
       }
       
     }, this);
+    UI.events.on('viewClear', function(){
+      this.powerGraphics.clear();
+      this.waterGraphics.clear();
+      this.policeGraphics.clear();
+      this.fireGraphics.clear();
+      this.healthGraphics.clear();
+      this.eduGraphics.clear();
+    }, this)
     //var test = this.add.image(this.xOffset + (10 * tilesize + tilesize / 2), this.yOffset + (20 * tilesize + tilesize / 2), 'utilities', 0)
     this.actionGraphics = this.add.graphics({ lineStyle: { width:2, color: 0xe0e33b, }, fillStyle: { color: 0x497640, alpha: .3 } })
     

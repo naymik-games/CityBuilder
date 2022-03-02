@@ -44,6 +44,7 @@ class Census {
 			}
     censusHistory = this.census
     gameStats.cH = censusHistory;
+    gameStats.population = censusHistory.resPopulation
     console.log('avg iq ' + censusHistory.iqAvg)
     
 

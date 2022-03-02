@@ -37,6 +37,7 @@ var Main = this.scene.get('playGame');
 this.dayPartText = this.add.bitmapText(650, 225, 'topaz', 'morning', 40).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
 
     this.modeText = this.add.bitmapText(475, 225, 'topaz', gameMode, 40).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
+    
     this.fundsText = this.add.bitmapText(315, 30, 'topaz', '$' + gameStats.funds, 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
     this.popText = this.add.bitmapText(315, 100, 'topaz', 'P: --', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
     this.avgText = this.add.bitmapText(315, 170, 'topaz', 'LV: -- IQ: --', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);

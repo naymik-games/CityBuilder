@@ -113,13 +113,9 @@ var educationText = this.add.bitmapText(785, 900, 'topaz', 'E: ' + (Math.floor(c
     var unemployedText = this.add.bitmapText(550, 1275, 'topaz', 'Unemp.: ' + unemp + '%', 40).setOrigin(0,.5).setTint(0xbf5846).setAlpha(1);
 
   //Budget stuff
-    var income = Math.floor((workforceAvailable * 1000) * .01)
-    income += Math.floor((indJobsAvailable * 1000) * .01)
-    income += Math.floor((comJobsAvailable * 1000) * .01)
-    
-    this.totalZonedTiles = gameStats.lR + gameStats.mR + gameStats.dR + gameStats.lC + gameStats.mC + gameStats.dC + gameStats.lI + gameStats.hI;
- var expenditures = calculateExpenditures()
-
+  var expenditures = calculateExpenditures()
+  var income = calculateIncome()
+  
     
     var balance = income - expenditures
   

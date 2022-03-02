@@ -1,3 +1,14 @@
+function calculateIncome(){
+  var workforceAvailable = Math.floor(censusHistory.resPopulation * .65)
+ 
+  var income = Math.floor((workforceAvailable * gameStats.resEarning) * gameStats.resTax)
+  console.log('inc ' + income)
+  income += Math.floor((censusHistory.comPopulation * gameStats.comEarning) * gameStats.comTax)
+  income += Math.floor((censusHistory.indPopulation * gameStats.indEarning) * gameStats.indTax)
+  console.log('wf ' + workforceAvailable)
+  return income
+}
+
 function calculateExpenditures(){
   
  var totalZonedTiles = gameStats.lR + gameStats.mR + gameStats.dR + gameStats.lC + gameStats.mC + gameStats.dC + gameStats.lI + gameStats.hI;

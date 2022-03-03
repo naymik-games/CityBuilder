@@ -253,7 +253,7 @@ class playGame extends Phaser.Scene {
 */
 this.expenditures = calculateExpenditures()
 this.income = calculateIncome()
-gameStats.funds = this.income - this.expenditures
+gameStats.funds += this.income - this.expenditures
 console.log(this.income + ' ' + this.expenditures)
     this.census.doCensus(this.grid)
     this.events.emit('newDay')

@@ -34,7 +34,7 @@ var Main = this.scene.get('playGame');
     this.progress.displayHeight = 0
 
     this.scoreText = this.add.bitmapText(72.5, 85, 'topaz', gameStats.day, 80).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1);
-this.dayPartText = this.add.bitmapText(650, 225, 'topaz', 'morning', 40).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
+    this.dayPartText = this.add.bitmapText(650, 225, 'topaz', 'morning', 40).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
 
     this.modeText = this.add.bitmapText(475, 225, 'topaz', gameMode, 40).setOrigin(.5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
     

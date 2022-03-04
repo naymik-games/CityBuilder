@@ -28,13 +28,15 @@ class City {
     this._population = normalizedResPop + censusHistory.comPopulation + censusHistory.indPopulation;
 
     //Employment ratio is determined by historic data
+    //more jobs than pop = >1
+    //less jobs than pop = <1
     if (censusHistory.resPopulation > 0) {
       employment = (censusHistory.comPopulation + censusHistory.indPopulation) / normalizedResPop
     }
     else {
       employment = 1;
     }
-
+    console.log('employment: ' + employment)
     //Determine how much people come from elsewhere to the city
     //Availability of employment and existing population affect this
     migration = normalizedResPop * (employment - 1);
@@ -103,7 +105,7 @@ class City {
     indRatio = (indRatio - 1) * taxScale + taxRatioEffects[taxModifier];
 
     gameStats.resValve = clamp(gameStats.resValve + Math.round(resRatio), -2000, 2000);
-    gameStats.comValve = clamp(gameStats.comValve +  Math.round(comRatio), -1500, 1500);
+    gameStats.comValve = clamp(gameStats.comValve + Math.round(comRatio), -1500, 1500);
     gameStats.indValve = clamp(gameStats.indValve + Math.round(indRatio), -1500, 1500);
     //console.log('res v ' + gameStats.resValve + ', com v ' + gameStats.comValve + ', ind v ' + gameStats.indValve)
     // gameStats.resValve = clamp(gameStats.resValve + Math.round(resRatio), -RES_VALVE_RANGE, RES_VALVE_RANGE);
@@ -216,7 +218,7 @@ class City {
   //////////////////////////////////////////////
   makePollutionIndex(grid, point) {
     var score = 0;
-    var tiles = this.getTilesInRange(grid, point, 3)
+    var tiles = this.getTilesInRange(point, 3)
     for (var i = 0; i < tiles.length; i++) {
       //low ind
       if (tiles[i].zone == 6) {
@@ -250,7 +252,109 @@ class City {
     return score
   }
 
+  ////////////////////////////////////////////
+  //
+  // BUILD ZONES
+  //
+  //////////////////////////////////////////////
+  buildZones(que, grid) {
+    var amount = que.length;
+    if (amount == 0) { return }
+    //console.log(amount)
+    for (var i = amount - 1; i > -1; i--) {
+      var point = que[i]
 
+      var zone = grid[point.y][point.x].zone
+      var chance = 11
+      if (zone == 0) {
+        if (gameStats.resValve < 0) {
+          chance = 1
+          //continue;
+        } else if (gameStats.resValve < 1000) {
+          chance = 5
+        } else {
+          chance = 9
+        }
+        if (this.nearZone(grid, point, 19, 3)) {
+          chance += 1
+        }
+      } else if (zone == 3) {
+        if (gameStats.comValve < 0) {
+          chance = 1
+          //continue;
+        } else if (gameStats.comValve < 750) {
+          chance = 5
+        } else {
+          chance = 9
+        }
+      } else if (zone == 6) {
+        if (gameStats.indValve < 0) {
+          chance = 1
+          //continue;
+        } else if (gameStats.indValve < 750) {
+          chance = 5
+        } else {
+          chance = 9
+        }
+      }
+      //  if (this.roadInRange(point) && this.nearWaterTower(point)) {
+      if (Math.random() * 10 < chance) {
+
+
+
+
+       point = que.pop()
+
+        var zone = grid[point.y][point.x].zone
+        //console.log(zones[zone])
+        var ran = Phaser.Math.Between(zones[zone].zoneMin, zones[zone].zoneMax)
+
+        if (zone == 0 || zone == 1 || zone == 2) {
+          var currentArray = residential
+        } else if (zone == 3 || zone == 4 || zone == 5) {
+          var currentArray = commercial
+        } else if (zone == 6 || zone == 7) {
+          var currentArray = industrial
+        }
+        //console.log(currentArray[0])
+        grid[point.y][point.x].tile.setTexture(currentArray[ran].sheet, currentArray[ran].index);
+        grid[point.y][point.x].type = currentArray[ran].name
+        grid[point.y][point.x].cursheet = currentArray[ran].sheet;
+        grid[point.y][point.x].curIndex = currentArray[ran].index;
+        grid[point.y][point.x].landValue = 0
+        var pi = this.makePollutionIndex(grid, point)
+
+        //   if(this.depotInRange(point)){
+        //     grid[point.y][point.x].hasRail = true
+        //   }
+        // grid[point.y][point.x].hasWater = true;
+        // grid[point.y][point.x].hasRoad = true;
+        grid[point.y][point.x].pI = pi
+        //increment zone count
+        if (zone == 0) {
+          gameStats.lR++
+        } else if (zone == 1) {
+          gameStats.mR++
+        } else if (zone == 2) {
+          gameStats.dR++
+        } else if (zone == 3) {
+          gameStats.lC++
+        } else if (zone == 4) {
+          gameStats.mC++
+        } else if (zone == 5) {
+          gameStats.dC++
+        } else if (zone == 6) {
+          gameStats.lI++
+        } else if (zone == 7) {
+          gameStats.hI++
+        }
+        //this.city.evaluateDay()
+
+      }
+    }
+    gameStats.bQ = que
+
+  }
 
 
   ////////////////////
@@ -271,7 +375,7 @@ class City {
     }
   }
   nearZone(grid, point, zone, range) {
-    var tiles = this.getTilesInRange(grid, point, range)
+    var tiles = this.getTilesInRange(point, range)
     for (var i = 0; i < tiles.length; i++) {
       if (tiles[i].zone == zone) {
         return true
@@ -279,8 +383,17 @@ class City {
     }
     return false
   }
+  nearWaterTower(point) {
+    var tiles = this.getTilesInRange(point, gameStats.waterRange)
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].type == "Water Tower") {
+        return true
+      }
+    }
+    return false
+  }
   nearOpenWater(grid, point, range) {
-    var tiles = this.getTilesInRange(grid, point, range)
+    var tiles = this.getTilesInRange(point, range)
     for (var i = 0; i < tiles.length; i++) {
       if (tiles[i].zone == 10) {
         if (tiles[i].curIndex == 0) {
@@ -291,7 +404,7 @@ class City {
     return false
   }
   nearZoneCount(grid, point, zone, range) {
-    var tiles = this.getTilesInRange(grid, point, range)
+    var tiles = this.getTilesInRange(point, range)
     var count = 0
     for (var i = 0; i < tiles.length; i++) {
       if (tiles[i].zone == zone) {
@@ -303,7 +416,7 @@ class City {
   nearZoneEduVal(grid, point, range, kind) {
 
 
-    var tiles = this.getTilesInRange(grid, point, range, kind)
+    var tiles = this.getTilesInRange(point, range)
     for (var i = 0; i < tiles.length; i++) {
       if (tiles[i].zone == 19) {
 
@@ -315,8 +428,26 @@ class City {
     return 0
 
   }
+  roadInRange(point) {
+    var tiles = this.getTilesInRange(point, gameStats.roadRange)
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].zone == 11) {
+        return true
+      }
+    }
+    return false
+  }
+  depotInRange(point) {
+    var tiles = this.getTilesInRange(point, gameStats.depotRange)
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].zone == 22 || tiles[i].zone == 23) {
+        return true
+      }
+    }
+    return false
+  }
   getAveragePollution(grid, point, range) {
-    var tiles = this.getTilesInRange(grid, point, range)
+    var tiles = this.getTilesInRange(point, range)
     var pITotal = 0
     for (var i = 0; i < tiles.length; i++) {
       pITotal += tiles[i].pI
@@ -325,7 +456,7 @@ class City {
     return pIAverage
   }
   getAverageIQ(grid, point, range) {
-    var tiles = this.getTilesInRange(grid, point, range)
+    var tiles = this.getTilesInRange(point, range)
     var iqTotal = 0
     for (var i = 0; i < tiles.length; i++) {
       iqTotal += tiles[i].IQ
@@ -351,7 +482,7 @@ class City {
     //console.log('center x ' + centerX + ', center y ' + centerY)
 
   }
-  getTilesInRange(grid, point, range) {
+  getTilesInRange(point, range) {
     var tilesInRange = [];
     for (var y = point.y - range; y <= point.y + range; y++) {
       for (var x = point.x - range; x <= point.x + range; x++) {

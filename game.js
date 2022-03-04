@@ -203,7 +203,7 @@ class playGame extends Phaser.Scene {
       
     }
     this.city.iqValueUpdate(this.grid)
-    this.buildZones(this.buildingQue);
+    this.city.buildZones(this.buildingQue, this.grid);
     //this.clearQues();
     this.totalZonedTiles = gameStats.lR + gameStats.mR + gameStats.dR + gameStats.lC + gameStats.mC + gameStats.dC + gameStats.lI + gameStats.hI;
 /*
@@ -260,6 +260,8 @@ console.log(this.income + ' ' + this.expenditures)
     this.driveTimes();
     var mess = new Message('end of day', 6)
     gameStats.messages.push(mess)
+    this.saveStats()
+    this.saveMap();
 
   }
   ////////////////////////////////////////////
@@ -305,114 +307,7 @@ console.log(this.income + ' ' + this.expenditures)
     }
     // console.log('test count ' + count)
   }
-  ////////////////////////////////////////////
-  //
-  // BUILD ZONES
-  //
-  //////////////////////////////////////////////
-  buildZones(que) {
-    var amount = que.length;
-    if(amount == 0){return}
-    //console.log(amount)
-    for (var i = amount - 1; i > -1; i--) {
-      var point = que[i]
-    
-      var zone = this.grid[point.y][point.x].zone
-      var chance = 11
-      if(zone == 0){
-        if(gameStats.resValve < 0){
-          chance = 1
-          //continue;
-        } else if(gameStats.resValve < 1000){
-          chance = 5
-        } else {
-          chance = 9
-        }
-        if(this.city.nearZone(this.grid, point, 19, 3)){
-          chance += 1
-        }
-      } else if(zone == 3){
-        if (gameStats.comValve < 0) {
-          chance = 1
-          //continue;
-        } else if (gameStats.comValve < 750) {
-          chance = 5
-        } else {
-          chance = 9
-        }
-      } else if(zone == 6){
-        if (gameStats.indValve < 0) {
-          chance = 1
-          //continue;
-        } else if (gameStats.indValve < 750) {
-          chance = 5
-        } else {
-          chance = 9
-        }
-      }
-      
-      if(Math.random()*10 < chance){
-       
-      
-      
-    
-        var point = que.pop()
-
-        var zone = this.grid[point.y][point.x].zone
-        //console.log(zones[zone])
-        var ran = Phaser.Math.Between(zones[zone].zoneMin, zones[zone].zoneMax)
-
-        if (zone == 0 || zone == 1 || zone == 2) {
-          var currentArray = residential
-        } else if (zone == 3 || zone == 4 || zone == 5) {
-          var currentArray = commercial
-        } else if (zone == 6 || zone == 7) {
-          var currentArray = industrial
-        }
-        //console.log(currentArray[0])
-        this.grid[point.y][point.x].tile.setTexture(currentArray[ran].sheet, currentArray[ran].index);
-        this.grid[point.y][point.x].type = currentArray[ran].name
-        this.grid[point.y][point.x].cursheet = currentArray[ran].sheet;
-        this.grid[point.y][point.x].curIndex = currentArray[ran].index;
-        this.grid[point.y][point.x].landValue = 0
-       var pi = this.city.makePollutionIndex(this.grid, point)
-        if (this.roadInRange(point) && this.waterInRange(point)) {
-          if(this.depotInRange(point)){
-            this.grid[point.y][point.x].hasRail = true
-          }
-          this.grid[point.y][point.x].hasWater = true;
-          this.grid[point.y][point.x].hasRoad = true;
-          this.grid[point.y][point.x].pI = pi
-          //increment zone count
-          if (zone == 0) {
-            gameStats.lR++
-          } else if (zone == 1) {
-            gameStats.mR++
-          } else if (zone == 2) {
-            gameStats.dR++
-          } else if (zone == 3) {
-            gameStats.lC++
-          } else if (zone == 4) {
-            gameStats.mC++
-          } else if (zone == 5) {
-            gameStats.dC++
-          } else if (zone == 6) {
-            gameStats.lI++
-          } else if (zone == 7) {
-            gameStats.hI++
-          }
-          //this.city.evaluateDay()
-        } else {
-          this.grid[point.y][point.x].tile.setAlpha(.5)
-          this.grid[point.y][point.x].hasWater = false;
-          this.grid[point.y][point.x].hasRoad = false;
-        }
-      }
-    }
-    gameStats.bQ = this.buildingQue
-    this.saveStats()
-    this.saveMap();
-  }
+  
 
   clearQues() {
     this.buildingQue = []

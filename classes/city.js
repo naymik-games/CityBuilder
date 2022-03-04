@@ -216,7 +216,7 @@ class City {
   // Calculate pollution
   //
   //////////////////////////////////////////////
-  makePollutionIndex(grid, point) {
+  makePollutionIndex(point) {
     var score = 0;
     var tiles = this.getTilesInRange(point, 3)
     for (var i = 0; i < tiles.length; i++) {
@@ -264,46 +264,11 @@ class City {
     for (var i = amount - 1; i > -1; i--) {
       var point = que[i]
 
-      var zone = grid[point.y][point.x].zone
-      var chance = 11
-      if (zone == 0) {
-        if (gameStats.resValve < 0) {
-          chance = 1
-          //continue;
-        } else if (gameStats.resValve < 1000) {
-          chance = 5
-        } else {
-          chance = 9
-        }
-        if (this.nearZone(grid, point, 19, 3)) {
-          chance += 1
-        }
-      } else if (zone == 3) {
-        if (gameStats.comValve < 0) {
-          chance = 1
-          //continue;
-        } else if (gameStats.comValve < 750) {
-          chance = 5
-        } else {
-          chance = 9
-        }
-      } else if (zone == 6) {
-        if (gameStats.indValve < 0) {
-          chance = 1
-          //continue;
-        } else if (gameStats.indValve < 750) {
-          chance = 5
-        } else {
-          chance = 9
-        }
-      }
+     
       //  if (this.roadInRange(point) && this.nearWaterTower(point)) {
-      if (Math.random() * 10 < chance) {
+      if (this.shouldBuild(point, grid)) {
 
-
-
-
-       point = que.pop()
+        point = que.pop()
 
         var zone = grid[point.y][point.x].zone
         //console.log(zones[zone])
@@ -322,7 +287,7 @@ class City {
         grid[point.y][point.x].cursheet = currentArray[ran].sheet;
         grid[point.y][point.x].curIndex = currentArray[ran].index;
         grid[point.y][point.x].landValue = 0
-        var pi = this.makePollutionIndex(grid, point)
+        var pi = this.makePollutionIndex(point)
 
         //   if(this.depotInRange(point)){
         //     grid[point.y][point.x].hasRail = true
@@ -355,7 +320,54 @@ class City {
     gameStats.bQ = que
 
   }
-
+  shouldBuild(point, grid){
+    var zone = grid[point.y][point.x].zone
+    var chance = 11
+    if (zone == 0 || zone == 1 || zone == 2) {
+      if (gameStats.resValve < 0) {
+        chance = 1
+        //continue;
+      } else if (gameStats.resValve < 1000) {
+        chance = 5
+      } else {
+        chance = 9
+      }
+      if (this.nearZone(grid, point, 19, 3)) {
+        chance += 1
+      }
+      var pi = this.makePollutionIndex(point)
+      if(pi < 0){
+        chance += 1
+      }
+      var lv = this.getAverageLV(point,2)
+      if(lv > 0){
+        chance += 1
+      }
+    } else if (zone == 3 || zone == 4 || zone == 5) {
+      if (gameStats.comValve < 0) {
+        chance = 1
+        //continue;
+      } else if (gameStats.comValve < 750) {
+        chance = 5
+      } else {
+        chance = 9
+      }
+    } else if (zone == 6 || zone == 7) {
+      if (gameStats.indValve < 0) {
+        chance = 1
+        //continue;
+      } else if (gameStats.indValve < 750) {
+        chance = 5
+      } else {
+        chance = 9
+      }
+    }
+    if (Math.random()*10 < chance){
+      return true
+    } else {
+      return false
+    }
+  }
 
   ////////////////////
   //helpers
@@ -454,6 +466,15 @@ class City {
     }
     var pIAverage = Math.round(pITotal / tiles.length)
     return pIAverage
+  }
+  getAverageLV(point, range) {
+    var tiles = this.getTilesInRange(point, range)
+    var LVTotal = 0
+    for (var i = 0; i < tiles.length; i++) {
+      LVTotal += tiles[i].landValue
+    }
+    var LVAverage = Math.round(LVTotal / tiles.length)
+    return LVAverage
   }
   getAverageIQ(grid, point, range) {
     var tiles = this.getTilesInRange(point, range)

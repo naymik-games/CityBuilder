@@ -396,7 +396,7 @@ let civic =
     zone: 13,
     cost: 50,
     size: 1,
-    pollution: -10,
+    pollution: -15,
   },
   {
     name: 'Picnic Park',
@@ -406,7 +406,7 @@ let civic =
     zone: 13,
     cost: 100,
     size: 1,
-    pollution: -5,
+    pollution: -15,
   },
   
   
@@ -429,7 +429,7 @@ let civic =
     zone: 20,
     cost: 100,
     size: 1,
-    pollution: -5
+    pollution: -10
   },
   
   {
